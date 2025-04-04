@@ -1,33 +1,24 @@
 import ast
 
-def unscramble(L):
-    result = []
-    queue = [L]
-
+def unscramble(data):
+    queue, result = [data], []
+    
     while queue:
         item = queue.pop(0)
         if isinstance(item, list):
-            for sub_item in item:
-                queue.append(sub_item)
+            queue.extend(item)
         else:
             result.append(chr(int(item, 16)))
+    
     return ''.join(result)
 
-def read_scrambled_flag_from_file(filename):
-    with open(filename, 'r') as file:
-        scrambled_flag = file.read().strip()
-
+def read_scrambled_flag(filename):
     try:
-        scrambled_flag_list = ast.literal_eval(scrambled_flag)
+        with open(filename, 'r') as file:
+            return ast.literal_eval(file.read().strip())
     except Exception as e:
-        print(f"Error converting scrambled flag to list: {e}")
-        scrambled_flag_list = []
+        print(f"Error reading file: {e}")
+        return []
 
-    return scrambled_flag_list
-
-filename = 'scrambled_flag.txt'
-
-scrambled_flag_list = read_scrambled_flag_from_file(filename)
-
-flag = unscramble(scrambled_flag_list)
+flag = unscramble(read_scrambled_flag('scrambled_flag.txt'))
 print(f"Unscrambled Flag: {flag}")
